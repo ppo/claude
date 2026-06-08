@@ -12,7 +12,13 @@ Produces a clean, human-readable artifact from the current conversation, formatt
 - **Readable over dense** – write for human retrieval, not machine parsing
 - **Structured but not bureaucratic** – use headers and bullets where they genuinely help; prose where it flows naturally
 - **Apply the user's formatting preferences** – follow conventions defined in their account profile (language, punctuation, quote style, date format, heading case, etc.)
-- **Notion-compatible Markdown** – standard Markdown only; no HTML, no `---` separators between sections, no more than 3 heading levels
+- **Notion-compatible Markdown** 
+    – Standard Markdown only; no HTML
+    - Maximum 4 heading levels (CMOS title case)
+    - No HR (`---`) to visually separate sections/headings
+    - Always use smart quotes `‘’“”` (NOT: `'"«»`)
+    - For break in a sentence (similar to `;`), always use `–` (NOT: `—` or `-`)
+    - For number range, always use regular dash `-` (example: `1-3`)
 
 ## Extraction Model
 
@@ -55,10 +61,12 @@ Produce as an **artifact** (Markdown). The user will copy/paste into Notion — 
 Apply all formatting preferences from the user's account profile. For sections with multiple items, prefer bullets. For narrative sections (Context, Conclusions), prefer short prose. Keep tone neutral-professional.
 
 ```
-# [Descriptive Title in User's Heading Style]
+# 🧞‍♂️ [Descriptive Title in User's Heading Style]
 
-**Date:** [YYYY-MM-DD]
-**Topics:** [comma-separated keywords for searchability]
+- **🦴 Metadata**
+    - **Date:** [YYYY-MM-DD]
+    - **Chat:** [chat name](URL)
+    - **Topics:** [comma-separated keywords for searchability]
 
 ## Context
 [What this conversation was about and why; the starting situation or question]
