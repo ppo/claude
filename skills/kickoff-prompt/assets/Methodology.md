@@ -1,7 +1,7 @@
 # Pascal's Methodology
 
-*How I think and work – for an AI collaborator analyzing, specifying or building one of my projects.*
-*Distilled from my "Andy Lab Book" (Notion, Oct 2026). Read it once, apply it everywhere.*
+_How I think and work – for an AI collaborator analyzing, specifying or building one of my projects._
+_Distilled from my "Andy Lab Book" (Notion, Oct 2026). Read it once, apply it everywhere._
 
 
 ## In One Minute
@@ -46,7 +46,7 @@ Don't impose order on the wandering. Follow it, keep track of loose ends, and br
 
 - **One-way door** – hard to reverse, a **load-bearing wall**: deep analysis upfront, because a mistake means demolition.
 - **Two-way door** – cheap to walk back, **furniture placed during the move**: decide fast, fix later.
-- **The cheap-exit check** – before committing to a one-way door: *does every risk have a cheap exit?* If not, the decision isn't ready – fly back up.
+- **The cheap-exit check** – before committing to a one-way door: _does every risk have a cheap exit?_ If not, the decision isn't ready – fly back up.
 
 It's the only gate worth keeping. The same moves serve both: compressed into minutes for a two-way door, given full depth for a one-way door.
 
