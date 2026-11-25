@@ -1,42 +1,47 @@
 ---
 name: kickoff-prompt
-description: Writes a kickoff prompt that Pascal pastes into a fresh Claude session so that session analyzes one of his projects, interviews him, and writes the vision plus first-version specifications – without writing code. Use when Pascal asks to "write a prompt" / "initial prompt" / "kickoff prompt" for a project or repo, to "do the same for {project}" after such a prompt, or wants a session to "analyze what I want and write the specs". Not for writing the specs themselves.
+description: Writes a kickoff prompt that the user pastes into a fresh Claude session, so that session analyzes one of their projects, interviews them, and writes the vision plus first-version specifications – without writing code. Not for writing the specs themselves.
+disable-model-invocation: true
 ---
 
 # Kickoff Prompt
 
-Produces `<repo>/docs.claude/_initial-prompt.md`: a self-contained prompt that turns a fresh session into Pascal's product analyst and architect for one project. That session reads his context, interviews him, then writes a **vision** (broad, shallow) and **first-version specs** (narrow, deep) into `<repo>/docs.claude/`.
+Produces `_kickoff-prompt.md`: a self-contained prompt that turns a fresh session into the user's product analyst and architect for one project. That session reads the project's context, interviews the user, then writes a **vision** (broad, shallow) and **first-version specs** (narrow, deep).
 
-You write the prompt, not the specs. The quality of the prompt comes from how well it is tailored to the project: its scope, its first-version target, and its one-way doors.
+You write the prompt, not the specs. Its quality comes from how well it is tailored to the project: its scope, its first-version target, and its one-way doors.
 
 
-## Conventions
+## Sources of Truth
 
-- **Repo layout** – `<repo>/.GI/ContextFiles/` holds Pascal's context (Notion exports, `<Name>.<YYMMDD>.txt|md`; `.GI` = his global git-ignore). `<repo>/docs.claude/` is where Claude-written docs go. Sibling folders (ex: `../<name>-cli`, `../<name>-prototype`) often hold earlier code.
-- **Methodology** – [`assets/Methodology.md`](assets/Methodology.md) is the canonical description of how Pascal thinks and works. Every project gets a copy at `<repo>/.GI/ContextFiles/Methodology.md`, and every prompt tells the session to read it first.
-- **Self-contained** – the target session starts in the project repo, usually with no memory. Use absolute paths, and keep the essentials of Pascal's constraints in the prompt itself (the methodology file has the rest).
-- **His writing conventions** – en dash ` – ` in prose, Title Case headings, TSV never CSV, review protocol 🤠 / 🧞‍♂️ / 🪤.
+Each thing is defined in one place; everywhere else points to it.
+
+- [`template.md`](template.md) – what the prompt says, how to fill it (its comments), and the conventions of the docs the session writes: structure, legend, decision format, writing rules. Follow those conventions in the prompt too.
+- [`methodology.md`](methodology.md) – how the user thinks and works, and their environment. This one is Pascal's: another user replaces it with their own. Every project gets a copy at `<repo>/.GI/context/methodology.md`. The prompt has the session read it first, so the prompt doesn't repeat it.
+- This file – where things are, and how to write the prompt.
+
+
+## Repo Layout
+
+- `<repo>/.GI/context/` – the project's context: any files that help understand it (`.GI` is meant to be globally git-ignored).
+- `<repo>/docs/kickoff/` – the prompt, and the docs the session writes.
+- Sibling folders – often related sub-projects, with earlier code or docs. Ex: in `~/dev/<project>/`, the repo `<project>-web` sits next to `<project>-cli` and `<project>-prototype`.
+
+The session starts in the repo, usually with no memory: the prompt uses absolute paths.
 
 
 ## Workflow
 
-1. **Locate.** Confirm the repo path. List `.GI/ContextFiles/`, `docs.claude/` (it may already hold a prompt or docs) and sibling folders. If Pascal gave no repo, ask.
-2. **Read the context, really.** Read the context files enough to know the project's intent, its sub-pages, its open ❓, its abandoned directions, and anything AI-generated (to be questioned). Look at existing code or prototypes: stack, data model, what's settled, what was a shortcut. Note related projects (Andy, Andy CLI, others) whose docs could be useful background.
-3. **Characterize the project.** Personal tool vs public product/business; CLI vs app vs platform; greenfield vs successor of existing scripts. This changes the stakeholders, the constraints (offline-first for him vs online product), and the one-way doors.
-4. **Decide the scope**, the heart of the prompt:
-   - **Vision** – what "the whole" covers for this project, in one sentence of parts.
-   - **First version** – the smallest thing he'd _actually use_ (or that moves a business forward), plus a path to grow. If the context makes it clear, state it. If not, state your best guess **and** tell the session to confirm it first – or list 2–3 candidates from his notes. Never silently pick.
-5. **List the likely one-way doors** for this project (4–7), each with the real options or tensions from his notes. Always consider: build vs adopt (name the actual alternatives he looked at or that exist), source of truth & data format, identifiers, platform/stack, public interfaces (CLI grammar, plugin contract, API), migration from what he uses today, and – for public products – neutrality, legal, privacy, money.
-6. **Fill the template** from [`references/template.md`](references/template.md). Tailor every `<…>` and remove guidance comments. Keep the fixed parts (interview rules, writing rules, phases) unless the project calls for a change.
-7. **Ensure the methodology file.** If `<repo>/.GI/ContextFiles/Methodology.md` is missing or differs from `assets/Methodology.md`, propose the copy command to Pascal (he runs commands himself).
-8. **Report briefly**: where the prompt is, what's specific to this project, and which guesses he should check (first-version target, anything uncertain). Offer nothing he didn't ask for.
+1. **Locate.** Confirm the repo path. List `.GI/context/`, `docs/kickoff/` (it may already hold a prompt or docs) and sibling folders. If the user gave no repo, ask.
+2. **Read the context, really.** Read the context files enough to know the project's intent, its sub-pages, its open questions (❓) and to-dos (🔴), its abandoned directions, and anything AI-generated (to be questioned). Look at existing code or prototypes: stack, data model, what's settled, what was a shortcut. Note related projects whose docs could be useful background.
+3. **Characterize the project.** Personal tool vs public product/business; CLI vs app vs platform; greenfield vs successor of existing scripts. This changes the stakeholders, the constraints and the one-way doors.
+4. **Fill the template**, following its comments. The scope, the first-version target and the one-way doors are the heart of the prompt: spend your thinking there.
+5. **Ensure the methodology file.** If `<repo>/.GI/context/methodology.md` is missing or differs from [`methodology.md`](methodology.md), propose the copy command to the user, who runs it.
+6. **Report briefly**: where the prompt is, what's specific to this project, which guesses the user should check (first-version target, anything uncertain), and any fixed part you changed. Offer nothing they didn't ask for.
 
 
 ## Quality Checks
 
-- Scope has **two levels with different depths**, and the first-version target is explicit or explicitly open.
-- Reading list uses **absolute paths**, says what each source is for, and marks other projects' docs as **background only – don't modify**.
-- One-way doors are **specific to this project**, not generic filler.
-- Ideas from his notes are to be **sorted (first version / later / never)**, not all specified.
-- The session **writes no code, commits nothing, installs nothing**, changes only `docs.claude/`, and **pauses between phases**.
-- Nothing in the prompt contradicts [`assets/Methodology.md`](assets/Methodology.md).
+- Every `<…>` is filled and every comment deleted; every `{…}` is kept.
+- The fixed parts are unchanged – or changed on purpose, and said in the report.
+- Tailored, not generic: the first-version target is explicit or explicitly open; the one-way doors, spikes and examples come from this project; each source in the reading list says what it's for.
+- Nothing contradicts the methodology.

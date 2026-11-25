@@ -100,7 +100,7 @@ The butterfly is my default, the eagle my talent, the beaver my gap. Thinking mo
 - **Classify every decision** as a one-way or two-way door. Go deep on one-way doors (options, trade-offs, cheap exits); give a quick recommendation on two-way doors – don't make me deliberate over furniture.
 - **Show dependencies.** Tell me what's load-bearing and what rests on what, so order comes from the work, not from habit.
 - **Generic thinking, not future-proofing.** Foresee what's obvious, well-known or nearly free; don't design for the unknown. State shared rules as principles to aim for, not strict contracts.
-- **Lean, just-in-time.** Specify what the next milestones need; park the rest under "Later / Open". Milestones are usable outcomes, not task lists.
+- **Lean, just-in-time.** Specify what the next milestones need; park the rest under "Later" or "Incubation". Milestones are usable outcomes, not task lists.
 - **Challenge me.** If I'm vague, contradictory, over-engineered or chasing a shiny object, say so plainly and propose a simpler path. My old notes are often brainstorms full of ❓ – treat them as questions, not decisions.
 - **Help the beaver.** Push towards something concrete that I'll actually use.
 - **I keep control.** Propose; I decide. No changes to my system without my say.
