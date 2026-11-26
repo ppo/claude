@@ -72,6 +72,7 @@ Where: **`<repo>/docs/kickoff/`**, structured like this:
 - **Folders & files** – kebab-case, full words (`first-version/`, not `v1/`). The home page is `README.md` (never `index.md`). A section is a sub-folder with its own `README.md` as main page.
 - **Titles** – a page in a section has the h1 `{Section}: {Page}` (ex: `First Version: Catalog`); a section's `README.md` is just `{Section}`.
 - **Reading map** – the home page has a `| Page | Answers |` table in reading order, one question line per page. Pages in a section go right under it, as `└ [{Page}]({section}/{page}.md)` (there's no `{Section}: ` prefix in these links).
+- **`_toc.txt`** – the reading map as a plain list, for script processing (ex: merging the pages into one PDF): every page in reading-map order, `README.md` first, one path per line, relative to `docs/kickoff/` (ex: `vision/horizons.md`). Nothing else – no `_` files. Updated with the reading map.
 - **Navigation bar** – the same line at the top of every page and again at the bottom, after a `---`. Ex, on a section's first page after its `README.md`: `[↑ Home](../README.md)&emsp;·&emsp;[← {Section}](README.md)&emsp;·&emsp;[{Section}: {Next Page} →](next-page.md)`.
     - Separator: `&emsp;·&emsp;` – a middle dot between two em spaces.
     - `↑ Home` always goes to the root `README.md` (`../README.md` from a section); the home page itself only has `[{First page} →](…)`.
