@@ -1,7 +1,6 @@
 <!--
 Template for <repo>/docs/kickoff/_kickoff-doc-prompt.md – the single source of what the prompt says. The docs' conventions are in conventions.md, not here.
 - <…> – fill in for this project, following the comment next to it, if any. Then delete every comment.
-- {…} – a placeholder for the session: keep it.
 - Everything else is fixed: keep it unless the project calls for a change, and only adapt its examples to the project.
 -->
 
@@ -69,6 +68,8 @@ Stop interviewing when both levels have the depth set in _Scope_ and _Your Role_
 
 Where: **`<repo>/docs/kickoff/`**. How: **`<repo>/docs/kickoff/_conventions.md`** – structure, navigation, legend, marks and IDs, page contents, writing rules. Read it before the outline, and follow it in every page.
 
+Check: **`python3 <absolute path of the skill's check.py> <repo>/docs/kickoff`** checks the pages against `_conventions.md`. Run it after writing and after each round of changes. Fix every problem (✗). Look at each warning (?) – they are heuristics: fix it, or keep it on purpose as a deviation.
+
 For this project:
 
 - **Behavior** covers <commands / screens / flows>, and what happens on <rerun, crash, offline, missing data/drive, partial failure…>.
@@ -79,12 +80,12 @@ For this project:
 
 ## Rules for This Session
 
-- No code, no commits, no installs, no changes outside `docs/kickoff/`. If a quick experiment would settle a question, propose the exact command and let me run it.
+- No code, no commits, no installs, no changes outside `docs/kickoff/`. Running the check is fine. If a quick experiment would settle a question, propose the exact command and let me run it.
 - Work in these steps, pausing after each for my go-ahead (going back to an earlier one is fine):
     1. read & summarize
     2. vision interview
     3. first-version interview
     4. outline (the pages and what each answers)
     5. write
-    6. self-review (contradictions, 🪤 traps, unmarked open questions, anything that breaks `_conventions.md` – and each deliberate deviation from it, <project-specific risks> – then report them)
+    6. self-review: run the check until it reports no problem, then look for what it can't see (contradictions, 🪤 traps, unmarked open questions, anything else that breaks `_conventions.md`, <project-specific risks>); report what you found, the warnings you kept, and each deliberate deviation from the conventions
     7. my review (I add 🤠 and 🪤; you handle them as the legend says, then self-review again).
