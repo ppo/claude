@@ -17,6 +17,7 @@ Each thing is defined in one place; everywhere else points to it.
 
 - [`template.md`](template.md) – what the prompt says, and how to fill it (its comments).
 - [`conventions.md`](conventions.md) – how the docs are written: structure, navigation, legend, marks and IDs, page contents, writing rules. Versioned by its `Version:` line. Every project gets a copy at `<repo>/docs/kickoff/_conventions.md`, which records the version its docs follow. Follow these conventions in the prompt too. Bringing existing docs to a newer version is the `kickoff-doc-update` skill's job, not this one's.
+- [`check.py`](check.py) – checks a docs folder against `conventions.md`: `python3 check.py <repo>/docs/kickoff`. Problems break a rule; warnings are heuristics to look at.
 - [`methodology.md`](methodology.md) – how the user thinks and works, and their environment. This one is Pascal's: another user replaces it with their own. Every project gets a copy at `<repo>/.GI/context/methodology.md`. The prompt has the session read it first, so the prompt doesn't repeat it.
 - This file – where things are, and how to write the prompt.
 
