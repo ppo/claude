@@ -128,8 +128,8 @@ def main():
             r.problem("_conventions.md", f"version {old}, current is {new}")
         elif copy.read_text(encoding="utf-8") != conv:
             r.problem("_conventions.md", f"differs from conventions.md {new}: it is never edited by hand")
-    if not (root / "_kickoff-prompt.md").is_file():
-        r.warn("_kickoff-prompt.md", "missing")
+    if not (root / "_kickoff-doc-prompt.md").is_file():
+        r.warn("_kickoff-doc-prompt.md", "missing")
 
     # --- _toc.txt and the files ----------------------------------------------------------------------
     toc_file = root / "_toc.txt"
@@ -220,8 +220,8 @@ def check_home(home, toc, pages, conv, r):
     first_map = map_at if map_at is not None else len(home.lines)
     if not any(l.startswith(">") for l in home.lines[:first_map]):
         r.problem("README.md", "no status note (a quote) before the reading map")
-    if not any("](_kickoff-prompt.md)" in l for l in home.lines[:first_map]):
-        r.problem("README.md", "no link to _kickoff-prompt.md before the reading map")
+    if not any("](_kickoff-doc-prompt.md)" in l for l in home.lines[:first_map]):
+        r.problem("README.md", "no link to _kickoff-doc-prompt.md before the reading map")
 
     rows = home.section_lines("Reading Map") or []
     listed = []

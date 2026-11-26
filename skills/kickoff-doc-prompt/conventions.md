@@ -16,11 +16,11 @@ These are defaults. When a page needs something they don't cover, or a rule fits
 - **Home page** – `README.md`, in this order:
     - What the project is, and the depths these pages cover.
     - A status note in a quote: who wrote the docs, when, from what, and whether they describe what is built or what is designed. One `**Updated on {date}**` paragraph per later change, saying what changed. A second change on the same day replaces that day's paragraph, which then says what both changed.
-    - The sources, and a link to [`_kickoff-prompt.md`](_kickoff-prompt.md).
+    - The sources, and a link to [`_kickoff-doc-prompt.md`](_kickoff-doc-prompt.md).
     - `## Reading Map` – a `| Page | Answers |` table in reading order, one question line per page. Pages in a section go right under it, as `└ [{Page}]({section}/{page}.md)` (no `{Section}: ` prefix in these links).
     - `## Legend` – the table below, copied as is.
 - **`_toc.txt`** – the reading map as a plain list, for script processing (ex: merging the pages into one PDF): every page in reading-map order, `README.md` first, one path per line, relative to `docs/kickoff/` (ex: `vision/horizons.md`). Nothing else – no `_` files. Updated with the reading map.
-- **`_` files** – `_kickoff-prompt.md`, `_conventions.md`: about the docs, not part of them. Not in the reading map, `_toc.txt` or the navigation.
+- **`_` files** – `_kickoff-doc-prompt.md`, `_conventions.md`: about the docs, not part of them. Not in the reading map, `_toc.txt` or the navigation.
 - **Navigation bar** – the same line at the top of every page and again at the bottom, after a `---`. Ex, on a section's first page after its `README.md`: `[↑ Home](../README.md)&emsp;·&emsp;[← {Section}](README.md)&emsp;·&emsp;[{Section}: {Next Page} →](next-page.md)`.
     - Separator: `&emsp;·&emsp;` – a middle dot between two em spaces.
     - `↑ Home` always goes to the root `README.md` (`../README.md` from a section); the home page itself only has `[{First page} →](…)`.

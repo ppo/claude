@@ -1,12 +1,12 @@
 ---
-name: kickoff-prompt
+name: kickoff-doc-prompt
 description: Writes a kickoff prompt that the user pastes into a fresh Claude session, so that session analyzes one of their projects, interviews them, and writes the vision plus first-version specifications – without writing code. Not for writing the specs themselves.
 disable-model-invocation: true
 ---
 
 # Kickoff Prompt
 
-Produces `_kickoff-prompt.md`: a self-contained prompt that turns a fresh session into the user's product analyst and architect for one project. That session reads the project's context, interviews the user, then writes a **vision** (broad, shallow) and **first-version specs** (narrow, deep).
+Produces `_kickoff-doc-prompt.md`: a self-contained prompt that turns a fresh session into the user's product analyst and architect for one project. That session reads the project's context, interviews the user, then writes a **vision** (broad, shallow) and **first-version specs** (narrow, deep).
 
 You write the prompt, not the specs. Its quality comes from how well it is tailored to the project: its scope, its first-version target, and its one-way doors.
 

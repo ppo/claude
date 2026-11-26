@@ -1,5 +1,5 @@
 <!--
-Template for <repo>/docs/kickoff/_kickoff-prompt.md – the single source of what the prompt says. The docs' conventions are in conventions.md, not here.
+Template for <repo>/docs/kickoff/_kickoff-doc-prompt.md – the single source of what the prompt says. The docs' conventions are in conventions.md, not here.
 - <…> – fill in for this project, following the comment next to it, if any. Then delete every comment.
 - {…} – a placeholder for the session: keep it.
 - Everything else is fixed: keep it unless the project calls for a change, and only adapt its examples to the project.
