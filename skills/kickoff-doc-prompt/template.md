@@ -6,7 +6,7 @@ Template for <repo>/docs/kickoff/_kickoff-doc-prompt.md – the single source of
 
 # Prompt – <Project>: Vision & First Version
 
-> Paste everything below the line into a new session, started in `<absolute repo path>`.
+> Paste everything below the line into a new session, started in `<full repo path, ~ for the home folder>`.
 > This repo has no memory yet: everything Claude needs to know about me and this project is in this prompt and in `.GI/context/`.
 
 ---
@@ -42,8 +42,8 @@ Read these, then tell me in ≤15 lines what you understood (vision + first vers
 
 - `<repo>/.GI/context/methodology.md` – **how I think and work. Read it first: it applies to the whole session.**
 - `<repo>/.GI/context/` (the other files) – the _source of intent_.<Optional: what each file covers, when not obvious.>
-- <Existing code / prototype / scripts, absolute paths> – <what to look at>. Read only.
-- <Other projects' docs, absolute paths> – **background only**: <what's relevant>. Reuse what fits, flag overlaps; don't modify it.
+- <Existing code / prototype / scripts, full paths> – <what to look at>. Read only.
+- <Other projects' docs, full paths> – **background only**: <what's relevant>. Reuse what fits, flag overlaps; don't modify it.
 
 Don't ask me anything those files already answer. If they contradict each other, ask which one wins. <Specific caveats: abandoned directions, AI-generated claims to question.>
 
@@ -68,7 +68,7 @@ Stop interviewing when both levels have the depth set in _Scope_ and _Your Role_
 
 Where: **`<repo>/docs/kickoff/`**. How: **`<repo>/docs/kickoff/_conventions.md`** – structure, navigation, legend, marks and IDs, page contents, writing rules. Read it before the outline, and follow it in every page.
 
-Check: **`python3 <absolute path of the skill's check.py> <repo>/docs/kickoff`** checks the pages against `_conventions.md`. Run it after writing and after each round of changes. Fix every problem (✗). Look at each warning (?) – they are heuristics: fix it, or keep it on purpose as a deviation.
+Check: **`python3 <full path of the skill's check.py, ~ for the home folder> <repo>/docs/kickoff`** checks the pages against `_conventions.md`. Run it after writing and after each round of changes. Fix every problem (✗). Look at each warning (?) – they are heuristics: fix it, or keep it on purpose as a deviation.
 
 For this project:
 

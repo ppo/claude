@@ -30,7 +30,9 @@ These are defaults. When a page needs something they don't cover, or a rule fits
 
 ## Legend
 
-Copied as is at the end of the home page. Use no other marks.
+Copied as is at the end of the home page.
+
+These marks are reserved for the elements below: each one only with its meaning, and no other emoji in their place. Everywhere else – the content itself, and 🤠 / 🧞‍♂️ discussions – emoji are free.
 
 | Mark | Name | Meaning |
 | --- | --- | --- |
@@ -134,7 +136,18 @@ In `roadmap.md`, one heading each: `### 🏁 M{NN} – {Outcome, in Title Case}`
 
 **Four root pages** end the reading map:
 
-- `roadmap.md` – the 🏁 milestones; then `## Later` (ideas parked for after the first version) and `## Incubation` (ideas that may resurface, or not).
+- `roadmap.md` – the 🏁 milestones and `## Spikes`; then `## Later` (ideas parked for after the first version) and, when there are any, `## Incubation` (ideas that may resurface, or not). `## Spikes` lists every 🧪:
+
+    ```markdown
+    | ID | Spike | Blocks | Page |
+    | --- | --- | --- | --- |
+    | S01 | {What to check.} | 🏁 M01 | [{Page}]({path}#{section-anchor}) |
+    ```
+
+    - _ID_ bare, as in `open-questions.md`: a spike has no state to show.
+    - _Spike_ – the title of its definition, as is.
+    - _Blocks_ – what waits on its result: the 🏁 milestones, else a horizon or a 🔀❗️ decision, or `–` when nothing does yet.
+    - _Page_ – where it is defined, then the pages that hold a part of it. A spike that no page needs (ex: a measure for a whole milestone) is defined in `roadmap.md`, under the table.
 - `decisions.md` – every 🔀:
 
     ```markdown
@@ -162,6 +175,7 @@ Index lines of this project's items link to the section where the item is define
 ## Writing Rules
 
 - **Actors are named:** who does what is USER or AI (or 🤠 and 🧞‍♂️) – never I, me, my or you, and no pronoun for either: repeat "USER" or "AI", even when it reads stiffly. Not about actors, so as written: quotes, UI labels, and any text that is part of the app's content (ex: a column `My ID`).
+    - _In a 🤠 / 🧞‍♂️ discussion_, USER and AI talk to each other: I and you there. Text meant for the page – quoted from it, or proposed for it – keeps USER and AI.
 - **Another project's IDs** – always `↗️ {Project} {ID}` ([External References](#external-references)).
 - **DRY:** reference where something is defined; never copy it into several pages.
 - **Simplify in context** unless it could confuse.

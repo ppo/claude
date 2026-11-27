@@ -29,12 +29,10 @@ NOT_PROJECT = set(
     "Only Both Each Every All Its Their Spike Spikes Decision Decisions Question Questions Milestone Milestones "
     "Proposal Proposals Part".split()
 )
-MARKS = {"🔀", "❗", "ℹ", "✅", "⛔", "🧪", "🧐", "❓", "🏁", "↗", "🤠", "🪤", "🧞", "♂"}
 # `🔀❗️⛔️ **D001 – …**`: the state (❗️ to decide, ℹ️ FYI, ✅ done), then ⛔️, with no space between the marks.
 DECISION = re.compile(r"🔀(?P<sp1> *)(?P<state>❗\ufe0f?|ℹ\ufe0f?|✅)?(?P<sp2> *)(?P<door>⛔\ufe0f?)? \*\*(?P<id>D\d{3}) – (?P<title>.+?)\*\*")
 STATES = {"❗": "❗️", "ℹ": "ℹ️", "✅": "✅"}
 INFO_BULLET = re.compile(r">\s*- ℹ")
-EMOJI = re.compile("[\U0001F000-\U0001FAFF☀-➿⬀-⯿⏩-⏺]")
 
 
 def slugify(text):
@@ -110,11 +108,11 @@ def main():
     ap.add_argument("docs", help="the <repo>/docs/kickoff folder")
     ap.add_argument("--conventions", default=str(Path(__file__).resolve().parent / "conventions.md"))
     args = ap.parse_args()
-    root = Path(args.docs).resolve()
+    root = Path(args.docs).expanduser().resolve()
     r = Report()
 
     # --- Conventions and their copy ---------------------------------------------------------------
-    conv_path = Path(args.conventions)
+    conv_path = Path(args.conventions).expanduser()
     conv = conv_path.read_text(encoding="utf-8") if conv_path.is_file() else None
     version = lambda text: (re.search(r"^Version: (\S+)", text, re.M) or [None, None])[1]
     if conv is None:
@@ -292,6 +290,7 @@ def check_ids(pages, order, own_name, r):
     defs = defaultdict(list)  # id → [(page, line index)]
     spike_parts = defaultdict(list)
     decisions = {}  # D → (page, line, title, one_way, quote lines, state)
+    spikes = {}  # S → title
     quoted = defaultdict(set)  # page → indexes of the lines in a decision's quote
     acs = defaultdict(list)  # code → pages
     refs = defaultdict(list)  # own id → [pages, in order of appearance]
@@ -329,6 +328,9 @@ def check_ids(pages, order, own_name, r):
                 decisions[d] = (rel, i, title, bool(m.group("door")), quote, state)
             for m in re.finditer(r"🧪 \*\*(Part of )?(S\d{2}) – ", line):
                 (spike_parts if m.group(1) else defs)[m.group(2)].append((rel, i))
+                if not m.group(1):
+                    raw_title = re.search(rf"\*\*{m.group(2)} – (.+?)\*\*", p.lines[i])
+                    spikes[m.group(2)] = (raw_title.group(1) if raw_title else "").strip().rstrip(".")
             for m in re.finditer(r"❓ \*\*(Q\d{3})\*\* – ", line):
                 defs[m.group(1)].append((rel, i))
             m = re.match(r"### 🏁 (M\d{2}) – ", line)
@@ -409,13 +411,13 @@ def check_ids(pages, order, own_name, r):
 
     # Spikes: defined where first needed, listed in the roadmap.
     roadmap = pages.get("roadmap.md")
+    if roadmap is None:
+        r.problem("roadmap.md", "missing")
     for s in sorted(k for k in defs if k.startswith("S")):
         def_page = defs[s][0][0]
         first = min(refs.get(s, []) + [def_page], key=lambda rel: order[rel])
         if first != def_page:
             r.warn(def_page, f"{s} is defined here, but first mentioned on {first} (defined where first needed?)")
-        if roadmap and s not in "\n".join(roadmap.prose):
-            r.problem("roadmap.md", f"{s} is not listed")
 
     # Decisions: their form, and decisions.md.
     for d, (rel, i, title, one_way, quote, state) in sorted(decisions.items()):
@@ -437,12 +439,13 @@ def check_ids(pages, order, own_name, r):
             r.warn(rel, f"{d} holds a 🧞‍♂️ but no 🤠 / 🪤 it replies to: a proposal is an ℹ️ (applied) or a ❗️ (not)")
         if re.search(r"_Options:_.*\(a\).*\(b\)", text):
             r.problem(rel, f"{d}: options inline – the form has one `>     - (a) **{{Option}}** …` sub-bullet each")
-    check_index(pages, "decisions.md", "Decision", r"D\d{3}", decisions, defs, r)
-    check_index(pages, "open-questions.md", "Question", r"Q\d{3}", None, defs, r)
+    check_index(pages, "decisions.md", ["Decision"], r"D\d{3}", defs, r, decisions=decisions)
+    check_index(pages, "open-questions.md", ["Question"], r"Q\d{3}", defs, r)
     if roadmap:
-        for rel in ("Later", "Incubation"):
-            if roadmap.section_lines(rel) is None:
-                r.warn("roadmap.md", f"no `## {rel}` section")
+        check_index(pages, "roadmap.md", ["Spike", "Blocks"], r"S\d{2}", defs, r, titles=spikes,
+                    required=any(k.startswith("S") for k in defs))
+        if roadmap.section_lines("Later") is None:
+            r.warn("roadmap.md", "no `## Later` section")
         for n, (i, level, text, _) in enumerate(roadmap.headings):
             if text.startswith("🏁 "):
                 end = next((h[0] for h in roadmap.headings[n + 1:] if h[1] <= level), len(roadmap.lines))
@@ -537,17 +540,28 @@ def project_before(before, projects):
     return strip_not_project(words) or None
 
 
-def check_index(pages, index, label, id_pattern, decisions, defs, r):
+def check_index(pages, index, columns, id_pattern, defs, r, decisions=None, titles=None, required=True):
+    """An index table: `| ID | {columns…} | Page |`, one row per item, the title in the first of the columns."""
     page = pages.get(index)
     if not page:
         r.problem(index, "missing")
         return
-    if not any(l.strip() == f"| ID | {label} | Page |" for l in page.lines):
-        r.problem(index, f"no `| ID | {label} | Page |` table")
+    header = f"| ID | {' | '.join(columns)} | Page |"
+    start = next((n for n, l in enumerate(page.lines) if l.strip() == header), None)
+    if start is None:
+        if required:
+            r.problem(index, f"no `{header}` table")
+        rows = []
+    else:
+        end = next((n for n in range(start + 1, len(page.lines)) if not page.lines[n].startswith("|")), len(page.lines))
+        rows = range(start + 2, end)
+    extra = r" \| [^|]+?" * (len(columns) - 1)
     listed = {}
-    for i, line in enumerate(page.lines):
-        m = re.match(rf"\| ([^|]*?)\b({id_pattern})\b([^|]*?) \| (.+?) \| (.+?) \|$", line)
+    for i in rows:
+        line = page.lines[i]
+        m = re.match(rf"\| ([^|]*?)\b({id_pattern})\b([^|]*?) \| ([^|]+?){extra} \| ([^|]+?) \|$", line)
         if not m:
+            r.problem(index, f"line {i + 1}: not a `{header}` row")
             continue
         before, k, after, title, cell = m.groups()
         marks = (before.strip() + after.strip()).replace("\ufe0f", "")
@@ -561,6 +575,7 @@ def check_index(pages, index, label, id_pattern, decisions, defs, r):
             r.problem(index, f"{k}: no link")
             continue
         f, _, anchor = link.group(2).partition("#")
+        f = f or index
         if f != def_page:
             r.problem(index, f"{k} links to {f}, but is defined on {def_page}")
         elif not anchor:
@@ -579,6 +594,8 @@ def check_index(pages, index, label, id_pattern, decisions, defs, r):
                 r.problem(index, f"{k}: write `{want} {k}`, with the marks of its definition")
             if title.rstrip(".") != def_title:
                 r.warn(index, f"{k}: title differs from its definition")
+        if titles and k in titles and title.rstrip(".") != titles[k]:
+            r.warn(index, f"{k}: title differs from its definition")
     for k in sorted(defs):
         if re.fullmatch(id_pattern, k) and k not in listed:
             r.problem(index, f"{k} is not listed")
@@ -599,10 +616,25 @@ def check_replies(pages, quoted, r):
             r.warn(rel, f"{n} 🧞‍♂️ but no 🤠 / 🪤 they reply to: a proposal is an ℹ️ or ❗️ decision")
 
 
+def discussion_lines(p):
+    """Indexes of the lines in 🤠 / 🧞‍♂️ blocks: from the line that starts with the mark to the end of its quote,
+    or of its paragraph when it isn't quoted."""
+    out, inside, quoted = set(), False, False
+    for i, line in enumerate(p.prose):
+        if re.match(r"[>\s]*(?:[-*] )?(🤠|🧞)", line):
+            inside, quoted = True, line.startswith(">")
+        elif inside and (not line.startswith(">") if quoted else not line.strip()):
+            inside = False
+        if inside:
+            out.add(i)
+    return out
+
+
 def check_writing(pages, r):
     voice = re.compile(r"\b(I|I'm|I've|I'd|me|my|mine|myself|[Yy]ou|[Yy]our|[Yy]ours|[Yy]ourself|My|Me)\b")
     for rel, p in pages.items():
         legend = p.section_lines("Legend") or range(0)
+        talk = discussion_lines(p)
         for i, line in enumerate(p.prose):
             if not line.strip() or i in legend:
                 continue
@@ -624,12 +656,9 @@ def check_writing(pages, r):
                 indent = len(m.group(2)) - (1 if m.group(1) else 0)
                 if indent % 4:
                     r.warn(rel, f"line {i + 1}: nested list indented by {indent} – use 4 spaces")
-            found = sorted(set(voice.findall(unquoted)))
+            found = sorted(set(voice.findall(unquoted))) if i not in talk else []
             if found:
                 r.warn(rel, f"line {i + 1}: {', '.join(found)} – an actor is USER or AI (quotes, UI labels and app content stay as written)")
-            other = {c for c in EMOJI.findall(line) if c not in MARKS}
-            if other:
-                r.warn(rel, f"line {i + 1}: marks not in the legend: {' '.join(sorted(other))}")
 
 
 def finish(r, toc=()):
